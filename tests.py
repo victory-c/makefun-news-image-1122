@@ -103,8 +103,8 @@ class Acceptance(unittest.TestCase):
 
     def test_reference_image(self):
         reference = ROOT/'entry.png'
-        if reference.exists():
-            self.assertEqual(reference.read_bytes(),self.png)
+        self.assertTrue(reference.exists(),'Committed preview is missing')
+        self.assertEqual(reference.read_bytes(),self.png)
 
 
 if __name__ == '__main__':
