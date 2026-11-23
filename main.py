@@ -2,11 +2,18 @@
 """The World, in One Day — 22 November 2026. Offline, stdlib-only renderer."""
 import json
 import os
+import sys
 from pathlib import Path
+
+# The grader uses -P from outside /bot: explicitly locate our own modules.
+# Do not attempt bytecode-cache writes into the read-only repository.
+ROOT = Path(__file__).resolve().parent
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(ROOT))
+
 from raster import Canvas, INK, PAPER
 from illustrations import RED, TEAL, globe, treaty, ship, chip, storm, factory, homes, court, miniature
 
-ROOT = Path(__file__).resolve().parent
 MUTED = '#5b6c69'
 RULE = '#b9c3b9'
 

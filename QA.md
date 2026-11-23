@@ -1,5 +1,13 @@
 # Local verification record
 
+## Grader safe-path compatibility fix
+
+After the server reported exit code 1, main.py was updated to insert its resolved directory into sys.path before local imports. It also disables bytecode-cache writes before loading local modules.
+
+Reverified with actual CPython 3.13.18, `-P -s`, cwd `/`, an empty environment except the specified PATH/TZ/hash-seed/locale/bot/output variables, a read-only repository copy, a 512 MiB address-space limit and a 60-second timeout. Two runs exited 0 and produced byte-identical reference PNGs. `tools/grader_check.py` preserves this regression check.
+
+A stronger separate private mount/network-namespace and chroot probe also ran twice with UID/GID 65534, a real read-only `/bot` mount, writable `/output`, tmpfs `/tmp`, no network, cwd `/`, and exactly `/usr/bin/python3 -P -s /bot/main.py` using CPython 3.13.18. Both runs exited 0 and produced the same 121,838-byte PNG with the SHA-256 below. No bytecode cache appeared. All seven existing acceptance tests passed again. These checks supersede the original invocation-only runtime validation below.
+
 This is a record of actual local execution, not a make.fun score.
 
 ## Image and runtime
