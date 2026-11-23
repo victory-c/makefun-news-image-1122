@@ -29,7 +29,7 @@ def treaty(c,x,y):
     c.polygon([(x+55,y-3),(x+43,y+34),(x+63,y+55),(x+42,y+86),(x+52,y+127),(x+65,y+127),(x+57,y+88),(x+78,y+57),(x+57,y+32),(x+68,y-3)],RED)
 
 
-def ship(c,x,y,s=1):
+def ship(c,x,y,s: float=1):
     def poly(pts,col):c.polygon([(x+a*s,y+b*s) for a,b in pts],col)
     poly([(0,36),(88,36),(72,58),(14,58)],INK)
     poly([(23,20),(60,20),(65,36),(18,36)],TEAL)

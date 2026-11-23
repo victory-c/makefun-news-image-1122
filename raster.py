@@ -45,7 +45,7 @@ class Canvas:
             for a,b in zip(cuts[::2],cuts[1::2]):
                 self.rect(math.ceil(a-.5)/S, y/S, (math.ceil(b-.5)-math.ceil(a-.5))/S, 1/S, color)
 
-    def line(self, points, color, width=1):
+    def line(self, points, color, width: float=1):
         for (x,y),(xx,yy) in zip(points,points[1:]):
             length = math.hypot(xx-x,yy-y)
             if not length:
@@ -72,12 +72,15 @@ class Canvas:
             x -= width
         elif align == 'center':
             x -= width/2
-        self.boxes.append([round(x,2),y,round(width,2),size*1.25,text])
+        bounds = [float('inf'), float('inf'), float('-inf'), float('-inf')]
         cr,cg,cb = rgb(color)
         for char in text:
             advance, (ox,oy), (w,h), encoded = glyphs[char]
             mask = base64.b64decode(encoded)
             left, top = round(x*S)+ox, round(y*S)+oy
+            if char != ' ':
+                bounds = [min(bounds[0],left/S), min(bounds[1],top/S),
+                          max(bounds[2],(left+w)/S), max(bounds[3],(top+h)/S)]
             for yy in range(h):
                 if not 0 <= top+yy < self.height:
                     continue
@@ -90,6 +93,8 @@ class Canvas:
                         self.pixels[at+1] = (cg*alpha+self.pixels[at+1]*inv+127)//255
                         self.pixels[at+2] = (cb*alpha+self.pixels[at+2]*inv+127)//255
             x += advance/S
+        if text.strip():
+            self.boxes.append([bounds[0], bounds[1], bounds[2]-bounds[0], bounds[3]-bounds[1], text])
         return width
 
     def paragraph(self, x, y, text, width, size=16, leading=23, family='sans', color=INK):

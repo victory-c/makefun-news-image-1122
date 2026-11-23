@@ -13,11 +13,16 @@ FONTS = {
     'sans': 'DejaVuSans.ttf',
     'bold': 'DejaVuSans-Bold.ttf',
 }
-SIZES = [11, 12, 13, 14, 15, 16, 17, 18, 20, 21, 22, 23, 24, 26, 28, 30, 32, 36, 40, 42, 44, 48, 56, 64, 72]
+SIZES = {
+    'serif': [36],
+    'display': [20, 23, 26, 40, 64, 72],
+    'sans': [11, 12, 15, 16],
+    'bold': [11, 12, 13, 17, 18, 21],
+}
 CHARS = ''.join(chr(c) for c in range(32, 127)) + '’‘“”–—°éã·−'
 result = {}
 for family, filename in FONTS.items():
-    for size in SIZES:
+    for size in SIZES[family]:
         font = ImageFont.truetype('/usr/share/fonts/truetype/dejavu/' + filename, size * 2)
         glyphs = {}
         for char in CHARS:
