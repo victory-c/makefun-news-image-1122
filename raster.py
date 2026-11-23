@@ -25,8 +25,23 @@ class Canvas:
         packed = pathlib.Path(__file__).with_name('assets').joinpath('type.pack')
         self.fonts = json.loads(zlib.decompress(packed.read_bytes()))
         self.boxes = []
+        self.art_boxes = []
+        self._drawing = None
+
+    def _mark(self, x0, y0, x1, y1):
+        if self._drawing is not None:
+            b = self._drawing
+            self._drawing = [min(b[0],x0),min(b[1],y0),max(b[2],x1),max(b[3],y1)]
+
+    def illustration(self, draw, *args):
+        self._drawing = [float('inf'),float('inf'),float('-inf'),float('-inf')]
+        first = len(self.boxes)
+        draw(self,*args)
+        self.art_boxes.append((self._drawing,list(range(first,len(self.boxes)))))
+        self._drawing = None
 
     def rect(self, x, y, w, h, color):
+        self._mark(x,y,x+w,y+h)
         x0, y0 = max(0, round(x*S)), max(0, round(y*S))
         x1, y1 = min(self.width, round((x+w)*S)), min(self.height, round((y+h)*S))
         row = bytes(rgb(color)) * max(0, x1-x0)
@@ -35,6 +50,8 @@ class Canvas:
             self.pixels[start:start+len(row)] = row
 
     def polygon(self, points, color):
+        self._mark(min(p[0] for p in points),min(p[1] for p in points),
+                   max(p[0] for p in points),max(p[1] for p in points))
         points = [(x*S, y*S) for x, y in points]
         for y in range(max(0, math.floor(min(p[1] for p in points))), min(self.height, math.ceil(max(p[1] for p in points)))):
             cuts = []

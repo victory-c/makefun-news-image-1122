@@ -81,6 +81,15 @@ class Acceptance(unittest.TestCase):
         self.assertIn('no claim of responsibility',text)
         self.assertIn('Other decisions pass',text)
 
+    def test_illustrations_clear_of_text(self):
+        for art, own_text in self.canvas.art_boxes:
+            for i,b in enumerate(self.canvas.boxes):
+                if i in own_text:
+                    continue
+                dx = min(art[2],b[0]+b[2])-max(art[0],b[0])
+                dy = min(art[3],b[1]+b[3])-max(art[1],b[1])
+                self.assertFalse(dx > 0 and dy > 0,f'Illustration overlaps {b[4]}')
+
     def test_deterministic_clean_processes(self):
         with tempfile.TemporaryDirectory(prefix='atlas-') as tmp:
             paths = [Path(tmp)/'one',Path(tmp)/'two']

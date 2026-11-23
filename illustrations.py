@@ -9,6 +9,20 @@ GOLD = '#c99740'
 MUTED = '#cbd7ce'
 
 
+def miniature(c, draw, x, y, scale=.72):
+    """Scale code-drawn icons to stay clear of adjacent text."""
+    class Local:
+        def rect(self,a,b,w,h,color):
+            c.rect(x+a*scale,y+b*scale,w*scale,h*scale,color)
+        def polygon(self,points,color):
+            c.polygon([(x+a*scale,y+b*scale) for a,b in points],color)
+        def line(self,points,color,width=1):
+            c.line([(x+a*scale,y+b*scale) for a,b in points],color,width*scale)
+        def ellipse(self,a,b,rx,ry,color,width=0):
+            c.ellipse(x+a*scale,y+b*scale,rx*scale,ry*scale,color,width*scale)
+    draw(Local(),0,0)
+
+
 def globe(c, x, y, r):
     c.ellipse(x,y,r,r,TEAL)
     for f in [.35,.7]:
